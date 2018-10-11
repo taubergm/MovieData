@@ -23,7 +23,8 @@ seen_actors = set()
         # replace with spaces
 #starring = re.sub("\[.*\|", " ", starring)
 def clean_wiki_plainlist(list_data):
-        list_data = re.sub("\|ref\|", "  ", list_data)
+        list_data = re.sub("ref.*/ref>\|", "  ", list_data)
+        list_data = re.sub("\|ref\|?", "  ", list_data)
         list_data = re.sub("name=.*\|", "  ", list_data)
         list_data = re.sub("<!.*\|", "  ", list_data)
         list_data = re.sub("<!.*\>", "  ", list_data)
@@ -52,12 +53,13 @@ def clean_wiki_plainlist(list_data):
         list_data = re.sub("\(.*\)", "  ", list_data)
         list_data = re.sub("\".*\"", "  ", list_data)
         list_data = re.sub("unbulleted list", "  ", list_data)
-        list_data = re.sub("ref.*/ref>", "  ", list_data)
         list_data = re.sub("</ref>", "  ", list_data)
         list_data = re.sub("</small>", "  ", list_data)
         list_data = re.sub("<small>", "  ", list_data)
         list_data = re.sub("Executive:", "  ", list_data)
         list_data = re.sub("Uncredited:", "  ", list_data)
+        list_data = re.sub("ref.*/ref>", "  ", list_data)
+        list_data = re.sub("\|ref\|", "  ", list_data)
         list_data = re.sub("\#", "  ", list_data)
         list_data = re.sub("United States dollar", "  ", list_data)
         list_data = re.sub("nowrap", "  ", list_data)
@@ -71,19 +73,48 @@ def clean_wiki_plainlist(list_data):
         return list_data
 
 
+def convert_wiki_date(date_string):
+
+    date_nums = re.findall(r'date\|(\d+)\|(\d+)\|(\d+)', date_string)  
+    try:
+        date_string = str(date_nums[0][0]) + "/" + str(date_nums[0][1]) + "/" + str(date_nums[0][2]) 
+    except:
+        date_string = ""
+
+    #for date_num in date_nums[0]
+    #    print date_num
+    return date_string
+
+
 def convert_wiki_numbers(number_string):
+    
+    number_string = re.sub("\$.*\$", "$", number_string)
+    number_string = re.sub(r".*\_(\d)", r"\1", number_string)
+    number_string = re.sub(r".*\_ (\d)", r"\1", number_string)
+    number_string = re.sub(r".*\_ (\d)", r"\1", number_string)
+    number_string = re.sub(r".*- \$(\d)", r"\1", number_string)
+    number_string = re.sub(r".*-\s+(\d)", r"\1", number_string)
+    number_string = re.sub(r"\$.*-(\d)", r"\1", number_string)
+    number_string = re.sub(r"_", r" ", number_string)
     number_string = re.sub("\$", "", number_string)
     number_string = re.sub("\,", "", number_string)
-    number_string = re.sub("\&nbsp;", "", number_string)
-    number_string = re.sub("\&nbsp", "", number_string)
+    number_string = re.sub("&nbsp;", "", number_string)
+    number_string = re.sub("&nbsp", "", number_string)
+    number_string = re.sub("nbsp;", "", number_string)
+    number_string = re.sub("nbsp", "", number_string)
+    number_string = re.sub(";", "", number_string)
     number_string = re.sub("\{\{nbsp\}\}", "", number_string)
     number_string = re.sub("billion.*", "billion", number_string)
     number_string = re.sub("million.*", "million", number_string)
 
     #number_string = re.sub("\.(\d)(\d)(\d)\s+billion","\1\2\3" + "000000", number_string)
 
+    number_string = re.sub(r"\.(\d)(\d)(\d)(\d)\s+billion", r"\1,\2,\3,\4," + "00000", number_string)
+    number_string = re.sub(r"\.(\d)(\d)(\d)(\d)billion", r"\1,\2,\3,\4," + "00000", number_string)
     number_string = re.sub(r"\.(\d)(\d)(\d)\s+billion", r"\1,\2,\3," + "000000", number_string)
+    number_string = re.sub(r"\.(\d)(\d)(\d)billion", r"\1,\2,\3," + "000000", number_string)
     number_string = re.sub(r"\.(\d)(\d)\s+billion", r"\1,\2," + "0000000", number_string)
+    number_string = re.sub(r"\.(\d)(\d)billion", r"\1,\2," + "0000000", number_string)
     number_string = re.sub(r"\.(\d)\s+billion", r"\1," + "00000000", number_string)
     number_string = re.sub(r"&.*billion", r"000000000", number_string)
     number_string = re.sub(r"billion", r"000000000", number_string)
@@ -92,18 +123,19 @@ def convert_wiki_numbers(number_string):
     number_string = re.sub(r"\.(\d)billion", r"\1," + "00000000", number_string)
     number_string = re.sub(r"billion", r"000000000", number_string)
 
-
-
+    number_string = re.sub(r"\.(\d)(\d)(\d)(\d)\s+million", r"\1,\2,\3,\4," + "00", number_string)
+    number_string = re.sub(r"\.(\d)(\d)(\d)(\d)million", r"\1,\2,\3,\4," + "00", number_string)
     number_string = re.sub(r"\.(\d)(\d)(\d)\s+million", r"\1,\2,\3," + "000", number_string)
+    number_string = re.sub(r"\.(\d)(\d)(\d)million", r"\1,\2,\3," + "000", number_string)
     number_string = re.sub(r"\.(\d)(\d)\s+million", r"\1,\2," + "0000", number_string)
+    number_string = re.sub(r"\.(\d)(\d)million", r"\1,\2," + "0000", number_string)
     number_string = re.sub(r"\.(\d)\s+million", r"\1," + "00000", number_string)
     number_string = re.sub(r"&.*million", r"000000", number_string)
-    number_string = re.sub(r"\s+million", r"000000", number_string)
-    number_string = re.sub(r"\.(\d)(\d)(\d)million", r"\1,\2,\3," + "000", number_string)
+    number_string = re.sub(r"million", r"000000", number_string)
+    umber_string = re.sub(r"\.(\d)(\d)(\d)million", r"\1,\2,\3," + "000", number_string)
     number_string = re.sub(r"\.(\d)(\d)million", r"\1,\2," + "0000", number_string)
     number_string = re.sub(r"\.(\d)million", r"\1," + "00000", number_string)
     number_string = re.sub(r"million", r"000000", number_string)
-
 
     number_string = re.sub("\s+(\d)", r"\1,", number_string)
     number_string = re.sub("\s+C", r"C", number_string)
@@ -117,6 +149,9 @@ def convert_wiki_numbers(number_string):
 
 
     number_string = number_string.strip()
+
+    print number_string
+
 
     return number_string
 
@@ -170,8 +205,13 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
 
+
+
         # get movie name
         movie_name = row[5]
+
+        if (movie_name == "name"):
+            continue
         #print movie_name
 
 
@@ -184,9 +224,6 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
 
         distributor = row[4].encode('utf8')        
         distributor = clean_wiki_plainlist(distributor)
-
-        country = row[6].encode('utf8')        
-        country = clean_wiki_plainlist(country)
 
         country = row[6].encode('utf8')        
         country = clean_wiki_plainlist(country)
@@ -219,6 +256,8 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
         writer = row[15].encode('utf8')        
         writer = clean_wiki_plainlist(writer)
 
+        language = row[17].encode('utf8')  
+        language = clean_wiki_plainlist(language)
 
 
         clean_writers = clean_python_list(writer)
@@ -234,6 +273,8 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
         clean_budget = convert_wiki_numbers(budget)
         clean_gross = convert_wiki_numbers(gross)
         clean_runtime = convert_wiki_numbers(runtime)
+        clean_language = clean_python_list(language)
+
 
 
         #print "%s - %s" % (i,clean_runtime)
@@ -252,13 +293,14 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
         new_csv_row['editing'] = clean_editor
         new_csv_row['studio'] = clean_studios
         new_csv_row['budget'] = clean_budget
+ 
         new_csv_row['gross'] = clean_gross
         new_csv_row['runtime'] = clean_runtime
         new_csv_row['music'] = clean_musicians
         new_csv_row['writer'] = clean_writers
         new_csv_row['starring'] = clean_actors
-        new_csv_row['language'] = row[17]
-        new_csv_row['released'] = row[18]
+        new_csv_row['language'] = clean_language
+        new_csv_row['released'] = convert_wiki_date(row[18])
 
 
         #print new_csv_row
