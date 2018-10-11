@@ -143,14 +143,12 @@ def convert_wiki_numbers(number_string):
     number_string = re.sub(r".*US", r"", number_string)
     number_string = re.sub(r",", r"", number_string)
     number_string = re.sub(r"small", r"", number_string)
-
     number_string = re.sub(r"minutes", r"", number_string)
     number_string = re.sub(r"min.", r"", number_string)
 
 
     number_string = number_string.strip()
-
-    print number_string
+    #print number_string
 
 
     return number_string

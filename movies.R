@@ -33,7 +33,7 @@ movies = movies[!duplicated(movies[,c('name','gross')], fromLast=FALSE),]
 
 # still missing force awakens, infinity war, black panther, deathly hallows, last jedi
 # plot top 20
-top_movies = movies[1:20,]
+top_movies = movies[1:30,]
 top_movies = top_movies[order(top_movies$gross, decreasing=TRUE),]
 top_movies$name = factor(top_movies$name, levels = top_movies$name[order(top_movies$gross, decreasing=TRUE)])
 p = ggplot(top_movies, aes(x=name, y=gross)) + geom_bar(stat="identity") 

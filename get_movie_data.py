@@ -10,7 +10,7 @@ import requests
 # create movie dictionary
 
 movies = []
-outfile = "movies_2000_2018_allb.csv"
+outfile = "movies_2018b.csv"
 
 j = 0
 with open(outfile, 'wb') as output_file:
@@ -21,10 +21,10 @@ with open(outfile, 'wb') as output_file:
     dict_writer.writeheader()
 
 
-    for y in range(0,48):
+    for y in range(0,17):
         year = str(2000 + y)  # get movvies from 1970 to 2018
-        #movie_page = "https://en.wikipedia.org/wiki/%s_in_film" % year
-        movie_page = "https://en.wikipedia.org/wiki/List_of_American_films_of_%s" % year
+        movie_page = "https://en.wikipedia.org/wiki/%s_in_film" % year
+        #movie_page = "https://en.wikipedia.org/wiki/List_of_American_films_of_%s" % year
         print movie_page
 
         page = requests.get(movie_page)
@@ -45,9 +45,6 @@ with open(outfile, 'wb') as output_file:
 
         # for each movie in the table, look it up on wikipedia, grab it's infobox data
         for item in tables:
-            print item
-            import sys
-            sys.exit()
             for td in item.findAll('td'): 
                 for i in td.findAll('i'): 
                     for a in td.findAll('a'): 
@@ -131,7 +128,10 @@ with open(outfile, 'wb') as output_file:
                         print movie
                         movies.append(movie)
                         
-                        dict_writer.writerow(dic)
+                        dict_writer.writerow(movie)
+
+                        #import sys
+                        #sys.exit()
                                        
                         
                         j = j + 1
