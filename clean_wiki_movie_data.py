@@ -283,7 +283,7 @@ with io.open(filename, encoding='utf-8', errors='ignore') as csvfile:
         new_csv_row['wiki_ref'] = row[1]
         new_csv_row['wiki_query'] = row[2]
         new_csv_row['producer'] = clean_producers
-        new_csv_row['distributor'] = clean_distributora
+        new_csv_row['distributor'] = clean_distributors
         new_csv_row['name'] = row[5]
         new_csv_row['country'] = clean_country
         new_csv_row['director'] = clean_directors
